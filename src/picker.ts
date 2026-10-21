@@ -321,10 +321,12 @@ export class Picker<T, R = void> implements Component, Focusable {
   private footer(width: number): string[] {
     const hints: Binding[] = [
       ...(this.options.actions ?? []).map((action) => action.binding),
-      ...(this.options.tabs ?? []).map((strip) => ({
-        keys: [...(strip.previous?.keys ?? []), ...strip.next.keys],
-        hint: strip.next.hint,
-      })),
+      ...(this.options.tabs ?? []).map(
+        (strip): Binding => ({
+          keys: [...(strip.previous?.keys ?? []), ...strip.next.keys],
+          ...(strip.next.hint === undefined ? {} : { hint: strip.next.hint }),
+        }),
+      ),
       { keys: [...keys.up.keys, ...keys.down.keys], hint: 'select' },
       ...(this.options.source.preview
         ? [{ keys: [...keys.previewUp.keys, ...keys.previewDown.keys], hint: 'preview' }]

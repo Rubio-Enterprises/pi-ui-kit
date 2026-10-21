@@ -34,7 +34,7 @@ export interface ShortcutOptions {
   /** Used when the file, the id or every listed key is missing or invalid. */
   fallback: KeyId;
   /** Filesystem to use; defaults to `node:fs`. For tests. */
-  fs?: ConfigFs;
+  fs?: ConfigFs | undefined;
 }
 
 /**

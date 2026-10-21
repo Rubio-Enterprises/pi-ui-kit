@@ -22,7 +22,10 @@ Invariants:
   never return lines wider than `width` or more than `height` rows; tests enforce both.
 - `Picker` is the only Pi `Component`. Theme and keybindings are injected, never read globally.
   Key hints are generated from bindings, never hand-written.
-- Options are objects with optional additions; no public mutable fields.
+- Options are objects with optional additions; no public mutable fields. Optional fields
+  accept an explicit `undefined`.
+- Consumers compile this source with their own settings, so `tsconfig.strict.json` checks it
+  under the strictest common ones (including `exactOptionalPropertyTypes`); keep it passing.
 - Extension-specific behavior (ranking, scopes, what an action does) stays in the extension.
   Add something here only when at least two extensions need it.
 
