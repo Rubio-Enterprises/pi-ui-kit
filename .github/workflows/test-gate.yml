@@ -11,7 +11,7 @@ jobs:
   canonical-tests:
     name: canonical tests
     timeout-minutes: 15
-    runs-on: ${{ fromJSON(vars.RUNNERS || '{}').light || fromJSON('["ubuntu-latest"]') }}
+    runs-on: ${{ fromJSON(vars.RUNNERS || '{}').small || fromJSON('["ubuntu-slim"]') }}
     outputs:
       tests_ran: ${{ steps.test.outputs.tests_ran }}
     steps:
@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 2
     if: ${{ always() }}
     needs: [canonical-tests]
-    runs-on: ${{ fromJSON(vars.RUNNERS || '{}').light || fromJSON('["ubuntu-latest"]') }}
+    runs-on: ${{ fromJSON(vars.RUNNERS || '{}').small || fromJSON('["ubuntu-slim"]') }}
     env:
       NEEDS_JSON: ${{ toJSON(needs) }}
     steps:
