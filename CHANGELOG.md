@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.0...v0.1.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **picker:** apply synchronous actions before the next key ([89e7e2c](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/89e7e2c890cc8a9b6e21df354572aa41dfdb76e1))
+
 ## 0.1.0 (2026-10-21)
 
 
