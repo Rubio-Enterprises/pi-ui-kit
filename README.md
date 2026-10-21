@@ -2,7 +2,7 @@
 
 UI components for Pi extensions, built on Pi's TUI.
 
-Picker overlays, list and preview panes, tab strips, key hints and frames, shared by
+Picker overlays, list and preview panes, tab strips, key hints, frames and shortcut lookup, shared by
 extensions such as pi-prompt-recall and pi-capability-exposure so they look and behave alike.
 Host-independent helpers live in [pi-core-kit](https://github.com/Rubio-Enterprises/pi-core-kit).
 Status: `internal`, pre-1.0.
@@ -23,7 +23,7 @@ Add it as a runtime dependency pinned to a release tag:
 ```json
 {
   "dependencies": {
-    "pi-ui-kit": "git+https://github.com/Rubio-Enterprises/pi-ui-kit.git#v0.1.0"
+    "pi-ui-kit": "git+https://github.com/Rubio-Enterprises/pi-ui-kit.git#v0.1.3"
   },
   "peerDependencies": {
     "@earendil-works/pi-tui": "*"
@@ -34,7 +34,8 @@ Add it as a runtime dependency pinned to a release tag:
 Pi installs package dependencies when it installs a git or npm package, and maps the kit's
 `@earendil-works/pi-tui` imports to the host's copy, so the kit adds no second TUI
 ([ADR 0002](docs/adr/0002-host-peers-from-a-nested-dependency.md)). The package ships
-TypeScript source for Bun and Pi's extension loader.
+TypeScript source for Bun and Pi's extension loader. Its one runtime dependency is
+[pi-core-kit](https://github.com/Rubio-Enterprises/pi-core-kit), used by `pi-ui-kit/shortcut`.
 
 ## Usage
 
@@ -86,6 +87,7 @@ Each module is a subpath export. There is no root entry point.
 | `pi-ui-kit/key-hints` | `renderKeyHints` |
 | `pi-ui-kit/frame` | `renderFrame`, `frameInnerWidth` |
 | `pi-ui-kit/picker` | `Picker`, `openPicker` |
+| `pi-ui-kit/shortcut` | `readShortcut`, `toKeyId` |
 
 - **Building blocks** (`list`, `tabs`, `preview`, `key-hints`, `frame`) are a state object
   the caller owns plus a pure render function. They return at most the requested width and
@@ -100,6 +102,11 @@ Each module is a subpath export. There is no root entry point.
   error in the pane.
 - **Bindings** name raw keys or Pi keybinding IDs. IDs follow the user's remaps in both
   matching and key hints.
+- **Shortcut lookup**: `readShortcut({ agentDir: getAgentDir(), id, fallback })` returns the
+  user's key for an extension shortcut from `keybindings.json`. The entry may be one key or a
+  list, and the first valid key wins. Extensions register shortcuts before Pi's keybinding
+  manager reaches them, so this reads the file Pi reads; it never throws. `toKeyId` normalizes
+  a key name to Pi's key-id grammar or returns undefined.
 - **Theme and keybindings** are injected. Pass the objects `ctx.ui.custom` supplies;
   `openPicker` does this for you.
 

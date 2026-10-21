@@ -11,11 +11,15 @@
     "./preview": "./src/preview.ts",
     "./key-hints": "./src/key-hints.ts",
     "./frame": "./src/frame.ts",
-    "./picker": "./src/picker.ts"
+    "./picker": "./src/picker.ts",
+    "./shortcut": "./src/shortcut.ts"
   },
   "files": [
     "src"
   ],
+  "dependencies": {
+    "pi-core-kit": "git+https://github.com/Rubio-Enterprises/pi-core-kit.git#v2.1.0"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.project.json && tsc -p tsconfig.tests.json",
     "lint": "mise exec -- biome check .",

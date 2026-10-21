@@ -43,8 +43,12 @@ _Avoid_: segmented control, toggle, filter
 ### Input
 
 **Binding**:
-A set of keys that triggers one user-facing action, named by raw key or by Pi keybinding ID.
+A set of keys that triggers one user-facing action inside a picker, named by raw key or by Pi keybinding ID.
 _Avoid_: shortcut, hotkey, keymap
+
+**Shortcut**:
+A key an extension registers with Pi to act from anywhere in the session, which the user can remap under the extension's keybinding ID. Pi's own term.
+_Avoid_: hotkey, global binding
 
 **Action**:
 What a binding does to the selected item, supplied by the extension.

@@ -11,7 +11,8 @@ vocabulary, and read [docs/adr](docs/adr) before changing the package shape.
 Invariants:
 
 - Runtime imports are `@earendil-works/pi-tui` (a `*` peer, never a dependency), `node:`
-  built-ins and sibling modules. Never import `@earendil-works/pi-coding-agent` at runtime:
+  built-ins, sibling modules and pi-core-kit (a dependency pinned to a release tag; only
+  `shortcut` uses it). Never import `@earendil-works/pi-coding-agent` at runtime:
   type its objects structurally (`UiTheme`, `UiKeybindings`, `PickerHost`) and keep
   `tests/host-types.test.ts` proving Pi's real types still fit.
 - Each module is `src/<name>.ts`, exported as `./<name>`. There is no root entry point.
