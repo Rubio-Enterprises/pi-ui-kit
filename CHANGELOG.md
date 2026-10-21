@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.2...v0.1.3) (2026-10-21)
+
+
+### Features
+
+* add shortcut lookup ([291d2ed](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/291d2edcb58e42cc113911a96834e8791bc20730))
+
 ## [0.1.2](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.1...v0.1.2) (2026-10-21)
 
 
