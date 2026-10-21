@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.4...v0.1.5) (2026-10-21)
+
+
+### Bug Fixes
+
+* pass typebox through as a peer ([44cd65c](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/44cd65c7455c551f80bb8053636a73c452433e2f))
+
 ## [0.1.4](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.3...v0.1.4) (2026-10-21)
 
 
