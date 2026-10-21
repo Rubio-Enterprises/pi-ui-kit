@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.3...v0.1.4) (2026-10-21)
+
+
+### Bug Fixes
+
+* compile under consumers' strict typescript settings ([6092a8b](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/6092a8be4bf75e1a803f169c5d9274218fde4f27))
+
 ## [0.1.3](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.2...v0.1.3) (2026-10-21)
 
 
