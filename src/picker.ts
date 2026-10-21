@@ -50,8 +50,16 @@ export interface PickerSource<T, R> {
   /** A stable identity, used to keep the selection across refreshes. */
   key(item: T): string;
   row(item: T): Row;
-  /** What the preview pane shows for the selected item. Omit for a list without a preview. */
+  /**
+   * What the preview pane shows for the selected item. Omit for a list without a preview.
+   * If building or rendering it throws, the pane shows the error and the list stays usable.
+   */
   preview?(item: T, controls: PickerControls<R>): PreviewContent;
+  /**
+   * Called once at the start of every render, before `row` and `preview`. Use it to take one
+   * snapshot of data that every row reads, instead of reading it once per row.
+   */
+  prepare?(): void;
   /** Shown in the list when nothing matches. */
   empty: string;
 }
@@ -91,6 +99,8 @@ const keys = {
   cancel: { keys: [{ id: 'tui.select.cancel' }] },
   previewUp: { keys: ['shift+up'] },
   previewDown: { keys: ['shift+down'] },
+  previewPageUp: { keys: ['shift+pageUp'] },
+  previewPageDown: { keys: ['shift+pageDown'] },
 } satisfies Record<string, Binding>;
 
 /** Width at or above which the preview sits beside the list rather than below it. */
@@ -188,6 +198,8 @@ export class Picker<T, R = void> implements Component, Focusable {
     else if (matches(data, keys.pageDown, kb)) this.move(this.pageSize());
     else if (matches(data, keys.previewUp, kb)) this.preview.scroll(-1);
     else if (matches(data, keys.previewDown, kb)) this.preview.scroll(1);
+    else if (matches(data, keys.previewPageUp, kb)) this.preview.scroll(-this.preview.pageSize);
+    else if (matches(data, keys.previewPageDown, kb)) this.preview.scroll(this.preview.pageSize);
     else if (!this.cycleTabs(data)) {
       const before = this.input.getValue();
       this.input.handleInput(data);
@@ -328,10 +340,29 @@ export class Picker<T, R = void> implements Component, Focusable {
     const header = this.header(inner);
     const footer = this.footer(inner);
     const bodyHeight = Math.max(1, height - 2 - header.length - footer.length);
+    this.options.source.prepare?.();
     const rows = this.items.map((item) => this.options.source.row(item));
     const listOptions = { theme, empty: this.options.source.empty };
     const item = this.selected;
     const previewFn = this.options.source.preview;
+    const previewLines = (selected: T, previewWidth: number, previewHeight: number) => {
+      try {
+        return renderPreview(
+          previewFn?.(selected, this.controls) ?? '',
+          this.preview,
+          previewWidth,
+          previewHeight,
+        );
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return renderPreview(
+          theme.fg('error', `Could not show preview: ${message}`),
+          this.preview,
+          previewWidth,
+          previewHeight,
+        );
+      }
+    };
     let body: string[];
     if (!previewFn || item === undefined) {
       this.lastListHeight = bodyHeight;
@@ -343,12 +374,7 @@ export class Picker<T, R = void> implements Component, Focusable {
       const left = renderList(rows, this.list, listWidth, bodyHeight, listOptions);
       const right = [
         theme.fg('dim', 'Preview'),
-        ...renderPreview(
-          previewFn(item, this.controls),
-          this.preview,
-          previewWidth,
-          bodyHeight - 1,
-        ),
+        ...previewLines(item, previewWidth, bodyHeight - 1),
       ];
       body = Array.from(
         { length: bodyHeight },
@@ -362,12 +388,7 @@ export class Picker<T, R = void> implements Component, Focusable {
       body = [
         ...top,
         theme.fg('dim', `Preview ${'─'.repeat(Math.max(0, inner - 8))}`),
-        ...renderPreview(
-          previewFn(item, this.controls),
-          this.preview,
-          inner,
-          bodyHeight - listHeight - 1,
-        ),
+        ...previewLines(item, inner, bodyHeight - listHeight - 1),
       ];
     }
     return renderFrame({ header, body, footer }, width, height, { theme });
@@ -392,15 +413,16 @@ export interface PickerHost {
 
 /**
  * Open a picker as a centered overlay, 90% of the terminal wide. Resolves with the result an
- * action passed to `close`, or undefined when the user cancels.
+ * action passed to `close`, or undefined when the user cancels. Pass a function to build the
+ * options from the host theme, for example to style row markers.
  */
 export function openPicker<T, R = void>(
   ui: PickerHost,
-  options: PickerOptions<T, R>,
+  options: PickerOptions<T, R> | ((theme: UiTheme) => PickerOptions<T, R>),
 ): Promise<R | undefined> {
   return ui.custom<R | undefined>(
     (tui, theme, keybindings, done) =>
-      new Picker<T, R>(options, {
+      new Picker<T, R>(typeof options === 'function' ? options(theme) : options, {
         theme,
         keybindings,
         rows: () => tui.terminal.rows,

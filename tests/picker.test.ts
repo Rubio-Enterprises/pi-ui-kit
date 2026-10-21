@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { visibleWidth } from '@earendil-works/pi-tui';
 import { match } from '../src/core.ts';
-import { Picker, type PickerOptions } from '../src/picker.ts';
+import { openPicker, Picker, type PickerHost, type PickerOptions } from '../src/picker.ts';
 import { TabsState } from '../src/tabs.ts';
 import { expectBounded, KEY, keybindings, plain, plainTheme } from './support.ts';
 
@@ -200,10 +200,101 @@ describe('Picker', () => {
     expectBounded(lines, width, rows);
   });
 
+  test('Shift+PgDn and Shift+PgUp scroll the preview by a page', () => {
+    const long = Array.from({ length: 80 }, (_, i) => `para ${i}`).join('\n');
+    const { picker } = setup({
+      source: {
+        items: () => ['one'],
+        key: (word) => word,
+        row: (word) => ({ label: word }),
+        preview: () => long,
+        empty: '',
+      },
+    });
+    const preview = () => plain(picker.render(140)).find((line) => line.includes('para '));
+    expect(preview()).toContain('para 0');
+    picker.handleInput('\x1b[6;2~');
+    expect(preview()).not.toContain('para 0 ');
+    picker.handleInput('\x1b[5;2~');
+    expect(preview()).toContain('para 0');
+  });
+
+  test('a failing preview shows its error in the pane and keeps the list usable', () => {
+    const { picker } = setup({
+      source: {
+        items: () => ['one', 'two'],
+        key: (word) => word,
+        row: (word) => ({ label: word }),
+        preview: (word) => {
+          if (word === 'one') throw new Error('no theme');
+          return `fine ${word}`;
+        },
+        empty: '',
+      },
+    });
+    const first = plain(picker.render(140)).join('\n');
+    expect(first).toContain('Could not show preview: no theme');
+    expect(first).toContain('› one');
+    picker.handleInput(KEY.down);
+    expect(plain(picker.render(140)).join('\n')).toContain('fine two');
+  });
+
+  test('prepare runs once per render, before rows', () => {
+    const calls: string[] = [];
+    const { picker } = setup({
+      source: {
+        items: () => ['one', 'two', 'three'],
+        key: (word) => word,
+        row: (word) => {
+          calls.push(word);
+          return { label: word };
+        },
+        prepare: () => calls.push('prepare'),
+        empty: '',
+      },
+    });
+    picker.render(80);
+    expect(calls).toEqual(['prepare', 'one', 'two', 'three']);
+  });
+
   test('page down moves by the visible list height', () => {
     const { picker } = setup({}, 14);
     picker.render(80);
     picker.handleInput(KEY.pageDown);
     expect(words.indexOf(picker.selected ?? '')).toBeGreaterThan(1);
   });
+});
+
+test('openPicker builds options from the host theme and resolves with the closed result', async () => {
+  let component: Picker<string, string> | undefined;
+  let overlay: unknown;
+  const host: PickerHost = {
+    custom: (factory, options) => {
+      overlay = options;
+      return new Promise((resolve) => {
+        component = factory(
+          { terminal: { rows: 20 }, requestRender() {} },
+          plainTheme,
+          keybindings,
+          resolve,
+        ) as Picker<string, string>;
+      });
+    },
+  };
+  let themed: unknown;
+  const opened = openPicker<string, string>(host, (theme) => {
+    themed = theme;
+    return {
+      title: 'Pick',
+      source: { items: () => ['a'], key: (v) => v, row: (v) => ({ label: v }), empty: '' },
+      actions: [{ binding: { keys: ['enter'] }, run: (v, c) => c.close(v) }],
+    };
+  });
+  expect(themed).toBe(plainTheme);
+  expect(overlay).toEqual({
+    overlay: true,
+    overlayOptions: { anchor: 'center', width: '90%', maxHeight: '85%' },
+  });
+  component?.handleInput(KEY.enter);
+  expect(await opened).toBe('a');
 });

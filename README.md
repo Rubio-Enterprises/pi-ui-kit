@@ -42,7 +42,7 @@ TypeScript source for Bun and Pi's extension loader.
 import { match } from 'pi-ui-kit/core';
 import { openPicker } from 'pi-ui-kit/picker';
 
-const choice = await openPicker<string, string>(ctx.ui, {
+const choice = await openPicker<string, string>(ctx.ui, (theme) => ({
   title: 'Branches',
   count: (items) => `${items.length} matches`,
   source: {
@@ -58,7 +58,7 @@ const choice = await openPicker<string, string>(ctx.ui, {
       run: (name, controls) => controls.close(name),
     },
   ],
-});
+}));
 ```
 
 ## Development
@@ -90,11 +90,14 @@ Each module is a subpath export. There is no root entry point.
 - **Building blocks** (`list`, `tabs`, `preview`, `key-hints`, `frame`) are a state object
   the caller owns plus a pure render function. They return at most the requested width and
   height.
-- **Picker** is the one Pi `Component`. It composes the blocks into a framed overlay: a title
+- **Picker** is the one Pi `Component`. `openPicker` takes its options, or a function that
+  builds them from the host theme. It composes the blocks into a framed overlay: a title
   row with tab strips and a count, a search input, the list pane, a preview pane (beside the
   list at 100 or more inner columns, below it otherwise) and key hints generated from its
   bindings. It routes keys in this order: Esc closes; actions; ↑/↓ and PgUp/PgDn select;
-  Shift+↑/↓ scroll the preview; tab strips; everything else edits the search.
+  Shift+↑/↓ and Shift+PgUp/PgDn scroll the preview; tab strips; everything else edits the search.
+  A source's `prepare` runs once per render before its rows; a preview that throws shows its
+  error in the pane.
 - **Bindings** name raw keys or Pi keybinding IDs. IDs follow the user's remaps in both
   matching and key hints.
 - **Theme and keybindings** are injected. Pass the objects `ctx.ui.custom` supplies;
