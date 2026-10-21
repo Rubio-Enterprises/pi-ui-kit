@@ -97,6 +97,68 @@ describe('Picker', () => {
     expect(picker.selected).toBe('gamma');
   });
 
+  test('a synchronous action takes effect before the next key', () => {
+    let toggled = false;
+    const { picker, results } = setup({
+      actions: [
+        {
+          binding: { keys: ['ctrl+t'] },
+          run: () => {
+            toggled = true;
+          },
+        },
+        {
+          binding: { keys: [{ id: 'tui.select.confirm' }] },
+          run: (word, controls) => controls.close(word),
+        },
+      ],
+    });
+    picker.handleInput(KEY.ctrlT);
+    picker.handleInput(KEY.enter);
+    expect(toggled).toBe(true);
+    expect(results).toEqual(['alpha']);
+  });
+
+  test('while an asynchronous action is pending, other actions are ignored', async () => {
+    let release = () => {};
+    let runs = 0;
+    const { picker } = setup({
+      actions: [
+        {
+          binding: { keys: ['space'] },
+          run: () => {
+            runs++;
+            return new Promise<void>((resolve) => {
+              release = resolve;
+            });
+          },
+        },
+      ],
+    });
+    picker.handleInput(KEY.space);
+    picker.handleInput(KEY.space);
+    expect(runs).toBe(1);
+    release();
+    await Bun.sleep(0);
+    picker.handleInput(KEY.space);
+    expect(runs).toBe(2);
+  });
+
+  test('synchronous action errors become an error status', () => {
+    const { picker } = setup({
+      actions: [
+        {
+          binding: { keys: ['space'] },
+          run: () => {
+            throw new Error('read only');
+          },
+        },
+      ],
+    });
+    picker.handleInput(KEY.space);
+    expect(plain(picker.render(80))[1]).toContain('read only');
+  });
+
   test('action errors become an error status instead of throwing', async () => {
     const { picker } = setup({
       actions: [

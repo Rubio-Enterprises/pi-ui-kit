@@ -181,7 +181,7 @@ export class Picker<T, R = void> implements Component, Focusable {
       return;
     }
     const action = this.options.actions?.find((candidate) => matches(data, candidate.binding, kb));
-    if (action) void this.run(action);
+    if (action) this.run(action);
     else if (matches(data, keys.up, kb)) this.move(-1);
     else if (matches(data, keys.down, kb)) this.move(1);
     else if (matches(data, keys.pageUp, kb)) this.move(-this.pageSize());
@@ -230,18 +230,32 @@ export class Picker<T, R = void> implements Component, Focusable {
     return false;
   }
 
-  private async run(action: PickerAction<T, R>): Promise<void> {
+  /**
+   * Run an action. Synchronous actions take effect before the next key; while an asynchronous
+   * action is pending, further actions are ignored.
+   */
+  private run(action: PickerAction<T, R>): void {
     if (this.busy) return;
-    this.busy = true;
+    let pending: void | Promise<void>;
     try {
-      await action.run(this.selected, this.controls);
+      pending = action.run(this.selected, this.controls);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.status = { text: message, tone: 'error' };
-    } finally {
-      this.busy = false;
-      if (!this.closed) this.env.requestRender();
+      this.fail(error);
+      return;
     }
+    if (!(pending instanceof Promise)) return;
+    this.busy = true;
+    pending
+      .catch((error: unknown) => this.fail(error))
+      .finally(() => {
+        this.busy = false;
+        if (!this.closed) this.env.requestRender();
+      });
+  }
+
+  private fail(error: unknown): void {
+    const message = error instanceof Error ? error.message : String(error);
+    this.status = { text: message, tone: 'error' };
   }
 
   private close(result: R | undefined): void {
