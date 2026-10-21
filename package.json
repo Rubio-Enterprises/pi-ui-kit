@@ -1,6 +1,6 @@
 {
   "name": "pi-ui-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "UI components for Pi extensions, built on Pi's TUI.",
   "license": "MIT",
   "type": "module",
