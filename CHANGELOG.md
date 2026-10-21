@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.1...v0.1.2) (2026-10-21)
+
+
+### Features
+
+* **picker:** theme-aware options, prepare hook and sturdier preview ([255f02f](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/255f02f385db38ef1274e47f4dfb9556227f655c))
+
 ## [0.1.1](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.0...v0.1.1) (2026-10-21)
 
 
