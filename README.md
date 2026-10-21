@@ -11,8 +11,8 @@ Status: `internal`, pre-1.0.
 
 - [Install](#install)
 - [Usage](#usage)
-- [API](#api)
 - [Development](#development)
+- [API](#api)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -61,6 +61,18 @@ const choice = await openPicker<string, string>(ctx.ui, {
 });
 ```
 
+## Development
+
+```bash
+mise run setup
+mise run lint
+mise run typecheck
+mise run test
+```
+
+Read [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) and [docs/adr](docs/adr) before
+changing the API.
+
 ## API
 
 Each module is a subpath export. There is no root entry point.
@@ -87,18 +99,6 @@ Each module is a subpath export. There is no root entry point.
   matching and key hints.
 - **Theme and keybindings** are injected. Pass the objects `ctx.ui.custom` supplies;
   `openPicker` does this for you.
-
-## Development
-
-```bash
-mise run setup
-mise run lint
-mise run typecheck
-mise run test
-```
-
-Read [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) and [docs/adr](docs/adr) before
-changing the API.
 
 ## Contributing
 
