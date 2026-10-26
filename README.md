@@ -64,7 +64,11 @@ const choice = await openPicker<string, string>(ctx.ui, (theme) => ({
 
 ## Development
 
+Use mise 2026.10.19 or newer. On a fresh clone, bootstrap the shared standards config first:
+
 ```bash
+mise trust
+mise bootstrap --only repos,tools --yes
 mise run setup
 mise run lint
 mise run typecheck
