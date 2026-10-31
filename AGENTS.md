@@ -1,7 +1,10 @@
 # Agent context
 
-This repo follows Rubio-Enterprises standards. Use `mise tasks` to discover commands;
-`mise run lint`, `typecheck` and `test` are the local checks.
+Checks come from `@rubio-enterprises/standards`. Run `mise run setup` once (it needs
+`NODE_AUTH_TOKEN` and installs the package, tools, dependencies and git hooks), then
+`mise run check`, `mise run typecheck` and `mise run test` (JUnit in `reports/test/`); `mise tasks`
+lists the rest. Put repository exceptions in each tool's own config (`biome.jsonc`,
+`tsconfig.json`) or in `lefthook.override.yml`.
 
 ## Repository guidance
 
