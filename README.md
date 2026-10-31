@@ -64,16 +64,18 @@ const choice = await openPicker<string, string>(ctx.ui, (theme) => ({
 
 ## Development
 
-Use mise 2026.10.19 or newer. On a fresh clone, bootstrap the shared standards config first:
+Use mise 2026.10.19 or newer. Set up and check a fresh clone with:
 
 ```bash
 mise trust
-mise bootstrap --only repos,tools --yes
-mise run setup
-mise run lint
+mise run setup      # standards package, tools, bun install, git hooks
+mise run check      # every check from @rubio-enterprises/standards
 mise run typecheck
-mise run test
+mise run test       # JUnit report in reports/test/
 ```
+
+`mise run setup` needs a `NODE_AUTH_TOKEN` that can read the `@rubio-enterprises` packages
+(for example `gh auth token`).
 
 Read [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) and [docs/adr](docs/adr) before
 changing the API.
