@@ -15,8 +15,9 @@ imports Pi.
 - **One library with subpath modules.** One repository and one version, but every UI release
   would bump the pins of cache-only consumers, and "core never imports Pi" would be a
   per-folder convention instead of a property of the package.
-- **Adopt @narumitw/pi-tui-kit (0.59–0.66), reviewed after the fact.** MIT, well tested and
-  active, but it does not fit this overlay. Its `browse` screen swaps between the list and a
+- **Adopt @narumitw/pi-tui-kit (0.59–0.66), reviewed after the fact**
+  ([comparison](../research/pi-tui-kit-comparison.md)). MIT, well tested and active, but it
+  does not fit this overlay. Its `browse` screen swaps between the list and a
   full-screen detail instead of keeping a preview beside the list. Its search is pi-tui's
   unranked fuzzy filter, which does not fold accents or return highlight ranges. It has no
   header tab strips, its shortcuts end the interaction instead of acting in place under a busy
