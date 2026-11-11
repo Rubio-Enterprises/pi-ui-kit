@@ -135,7 +135,7 @@ A is well-tested and active. Its risks are pace and the single maintainer, not n
 
 ## Paragraph proposed for ADR 0001 under "Alternatives considered"
 
-An edited version is in [ADR 0001](../adr/0001-shared-libraries-split-by-dependency.md) under Considered Options.
+A shortened version is in [ADR 0004](../adr/0004-shared-libraries-split-by-dependency.md) under Considered Options.
 
 - **Adopt @narumitw/pi-tui-kit (0.59–0.66).** It's MIT, well-tested and active, but it doesn't
   fit this overlay. Its `browse` screen swaps between the list and a full-screen detail instead

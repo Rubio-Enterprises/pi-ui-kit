@@ -8,10 +8,15 @@ lists the rest. Put repository exceptions in each tool's own config (`biome.json
 ## Repository guidance
 
 pi-ui-kit holds UI components shared by Pi extensions. Use [GLOSSARY.md](GLOSSARY.md)
-vocabulary, and read [docs/adr](docs/adr) before changing the package shape.
+vocabulary.
 
 Invariants:
 
+- **Architecture decisions**: an ADR records why a rule exists. Before changing a decision, check
+  `docs/adr/` for an accepted ADR; reversing one needs a superseding ADR. Write one only if a
+  person approved it: in the session, or in an approved plan or `delegate-to-agent` issue that
+  names the ADR. Otherwise the PR description is the record. Follow
+  [the format](docs/adr/0001-record-architecture-decisions.md), which states the ADR test.
 - Runtime imports are `@earendil-works/pi-tui` (a `*` peer, never a dependency), `node:`
   built-ins, sibling modules and pi-core-kit (a dependency pinned to a release tag; only
   `shortcut` uses it). pi-core-kit's `typebox` peer is passed through as a `*` peer here too;

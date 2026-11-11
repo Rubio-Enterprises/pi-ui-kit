@@ -32,10 +32,10 @@ Add it as a runtime dependency pinned to a release tag:
 ```
 
 Pi installs package dependencies when it installs a git or npm package, and maps the kit's
-`@earendil-works/pi-tui` imports to the host's copy, so the kit adds no second TUI
-([ADR 0002](docs/adr/0002-host-peers-from-a-nested-dependency.md)). The package ships
-TypeScript source for Bun and Pi's extension loader. Its one runtime dependency is
-[pi-core-kit](https://github.com/Rubio-Enterprises/pi-core-kit), used by `pi-ui-kit/shortcut`.
+`@earendil-works/pi-tui` imports to the host's copy, so the kit adds no second TUI.
+The package ships TypeScript source for Bun and Pi's extension loader. Its one runtime
+dependency is [pi-core-kit](https://github.com/Rubio-Enterprises/pi-core-kit), used by
+`pi-ui-kit/shortcut`.
 
 ## Usage
 
