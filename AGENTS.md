@@ -1,14 +1,18 @@
 # Agent context
 
-Checks come from `@rubio-enterprises/standards`. Run `just build && just setup` once (dependencies and git hooks), then
-`just check`, `just typecheck` and `just test` (JUnit in `reports/test/`); `just --list`
-lists the rest. Put repository exceptions in each tool's own config (`biome.jsonc`,
-`tsconfig.json`) or in `lefthook.override.yml`.
+## Commands
+
+Run every project command through `just`, which runs it in this repository's dev image; the host carries no project toolchain.
+
+In a fresh checkout: `just build`, then `just setup`. `just --list` shows the recipes.
+
+Single test: `just exec bun test tests/host-types.test.ts`. JUnit reports go to `reports/test/`.
 
 ## Repository guidance
 
 pi-ui-kit holds UI components shared by Pi extensions. Use [GLOSSARY.md](GLOSSARY.md)
-vocabulary.
+vocabulary. Checks come from `@rubio-enterprises/standards`. Put repository exceptions in
+each tool's own config (`biome.jsonc`, `tsconfig.json`) or in `lefthook.override.yml`.
 
 Invariants:
 
@@ -39,23 +43,3 @@ Invariants:
 
 Tests use plain and SGR-tagged themes from `tests/support.ts`; keep width/height invariants
 for every block at several widths. The test runner must prove a positive executed-test count.
-
-## Commands
-
-First command in a fresh checkout: `just build`.
-Never install toolchains on the host — all project commands run in the dev image through `just`.
-
-```bash
-just build
-just setup
-just check
-just fmt
-just check-pr
-just typecheck
-just test
-just setup-deps
-just shell
-just exec <cmd...>
-```
-
-Single test: `just exec uv run pytest path::test` (Python); otherwise prefix the underlying runner with `just exec`.
