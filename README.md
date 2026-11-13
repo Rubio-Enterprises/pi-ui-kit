@@ -64,18 +64,17 @@ const choice = await openPicker<string, string>(ctx.ui, (theme) => ({
 
 ## Development
 
-Use mise 2026.10.19 or newer. Set up and check a fresh clone with:
+With Docker, Compose, `just` and Git available, set up and check a fresh clone with:
 
 ```bash
-mise trust
-mise run setup      # standards package, tools, bun install, git hooks
-mise run check      # every check from @rubio-enterprises/standards
-mise run typecheck
-mise run test       # JUnit report in reports/test/
+just build
+just setup      # dependencies in container volumes, git hooks
+just check      # every check from @rubio-enterprises/standards
+just typecheck
+just test       # JUnit report in reports/test/
 ```
 
-`mise run setup` needs a `NODE_AUTH_TOKEN` that can read the `@rubio-enterprises` packages
-(for example `gh auth token`).
+`just build` needs access to the organization's base image.
 
 Read [AGENTS.md](AGENTS.md), [GLOSSARY.md](GLOSSARY.md) and [docs/adr](docs/adr) before
 changing the API.
