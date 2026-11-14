@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.5...v0.1.6) (2026-11-14)
+
+
+### Bug Fixes
+
+* **devcontainer:** drop image-inherited features from the feature lock ([#46](https://github.com/Rubio-Enterprises/pi-ui-kit/issues/46)) ([00a1ace](https://github.com/Rubio-Enterprises/pi-ui-kit/commit/00a1ace1ff799f43f227fadcfed39b3a77daa3c5))
+
 ## [0.1.5](https://github.com/Rubio-Enterprises/pi-ui-kit/compare/v0.1.4...v0.1.5) (2026-10-21)
 
 
